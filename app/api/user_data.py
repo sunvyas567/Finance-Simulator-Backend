@@ -20,8 +20,31 @@ def load_user_data(username: str):
 #    print("In save user data", username)
 #    db.collection("user_data").document(username).set(data)
 #    return {"status": "saved"}
-
 @router.post("/save")
+def save_user_data(payload: dict):
+    username = payload.get("username")
+    data = payload.get("data", {})
+
+    if not username:
+        raise HTTPException(status_code=400, detail="Username is required")
+
+    # 1. Update the 'users' collection (Creates document if it doesn't exist)
+    user_ref = db.collection("users").document(username)
+    user_ref.set(
+        {
+            "app_data": data  
+        },
+        merge=True
+    )
+
+    # 2. Update the 'user_data' collection 
+    # (CRITICAL: Added merge=True so it doesn't wipe out existing data)
+    data_ref = db.collection("user_data").document(username)
+    data_ref.set(data, merge=True)
+
+    return {"status": "saved"}
+
+@router.post("/save-old")
 def save_user_data(payload: dict):
     #db = get_db()
     username = payload["username"]

@@ -30,7 +30,19 @@ def calculate_fire_metrics(user_data: dict, projections: list):
     fire_number = annual_expense * 25
 
     current_corpus = user_data.get("initial_corpus", {})
-    current_total = sum(current_corpus.values())
+
+    current_total = 0
+    for value in current_corpus.values():
+        if isinstance(value, dict):
+            # If it's a nested dict like {"input": 50000}
+            current_total += float(value.get("input", 0))
+        else:
+            # If it's already a flat number like 50000
+            try:
+                current_total += float(value)
+            except (ValueError, TypeError):
+                pass
+    #current_total = sum(current_corpus.values())
 
     fire_progress = (current_total / fire_number) * 100 if fire_number else 0
 
