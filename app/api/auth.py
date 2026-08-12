@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
-import streamlit_authenticator as stauth
+#import streamlit_authenticator as stauth
+import bcrypt
 
 from app.core.firebase import get_db, get_auth
 
@@ -45,7 +46,12 @@ def register_user(req: RegisterRequest):
     # Hash password for Streamlit
     # -----------------------------
     #hashed = stauth.Hasher([req.password]).generate()[0]
-    hashed = stauth.Hasher.hash(req.password)
+    #hashed = stauth.Hasher.hash(req.password)
+
+    hashed = bcrypt.hashpw(
+    req.password.encode("utf-8"),
+    bcrypt.gensalt()
+).decode("utf-8")
 
 
     # -----------------------------
