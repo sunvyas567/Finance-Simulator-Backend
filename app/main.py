@@ -38,7 +38,7 @@ app = FastAPI(title="Retirement Finance Backend")
 # 3. Inject the middleware parameters into your engine configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],            # Alternately use ["*"] for public testing access
+    allow_origins=["*"],            # Alternately use origins for localhost testing access
     allow_credentials=True,
     allow_methods=["*"],              # Allows GET, POST, OPTIONS, PUT, DELETE
     allow_headers=["*"],              # Allows Authorization and Content-Type headers
